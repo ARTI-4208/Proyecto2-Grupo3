@@ -60,9 +60,11 @@ docker login
 docker build -t kube.ms.bridge_kafka_mosquitto .
 docker tag kube.ms.bridge_kafka_mosquitto $DOCKER_ID_USER/bridge_kaf_mqtt
 docker push $DOCKER_ID_USER/bridge_kaf_mqtt
+
 ##Para probar el contenedor antes de subirlo Kubernetes
 docker pull username/bridge_kaf_mqtt
 docker run morjuela/bridge_kaf_mqtt
+
 ##Para deplegar el Kubernetes el Microservicio Bridge-Mosquitto-Kafka
 kubectl apply -f ms_bridge_km-svc.yml
 kubectl get service
