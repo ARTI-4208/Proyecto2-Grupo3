@@ -52,7 +52,7 @@ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 -
 bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic Voltage
 bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic Locate
 ```
-Se ejecuta:
+Se ejecuta para el debido despliegue como Microservicio:
 ```sh
 ##Para subir al Docker Hub la contenedora
 export DOCKER_ID_USER="username"
@@ -63,7 +63,7 @@ docker push $DOCKER_ID_USER/bridge_kaf_mqtt
 
 ##Para probar el contenedor antes de subirlo Kubernetes
 docker pull username/bridge_kaf_mqtt
-docker run morjuela/bridge_kaf_mqtt
+docker run username/bridge_kaf_mqtt
 
 ##Para deplegar el Kubernetes el Microservicio Bridge-Mosquitto-Kafka
 kubectl apply -f ms_bridge_km-svc.yml
@@ -76,12 +76,37 @@ Vamos a ejecutar una aplicación que estará escuchando de kafka y almacenará e
 cd redis-stable/utils
 
 sudo ./install_server.sh
+
+##Es necesario ajustar la configuraciOn de la instancia de Base de Datos
+redis-cli
+> shutdown
+
+##Ajustar la configuraciOn de del archivo de configuraciOn de Redis /etc/redis/6379.conf
+bind 127.0.0.1 'DIR.IP.LOCAL'
+protected-mode no
+
+##Subir la base de datos con el siguiente comando
+nohup redis-server --protected-mode no &
 ```
 Redis es una base de datos en memoria que funciona con el esquema llave-valor, por lo que almacenará el último dato que venga de kafka siguiendo el patrón publish-suscribe.
 
-Ejecutamos la aplicación que consumirá de kafka:
+Desplegamos la aplicación con Docker + Kubernetes, la cual consumirá de kafka:
 ```sh
-nodejs kafka_consumer.js
+##Para subir al Docker Hub la contenedora
+export DOCKER_ID_USER="username"
+docker login
+docker build -t kube.ms.consumer_kafka_redis .
+docker tag kube.ms.consumer_kafka_redis $DOCKER_ID_USER/consumer_kaf_rds
+docker push $DOCKER_ID_USER/consumer_kaf_rds
+
+##Para probar el contenedor antes de subirlo Kubernetes
+docker pull username/consumer_kaf_rds
+docker run username/consumer_kaf_rds
+
+##Para deplegar el Kubernetes el Microservicio Kafka-Redis
+kubectl apply -f ms_consumer_kr-svc.yml
+kubectl get service
+kubectl get deployments
 ```
 ### SocketIO
 Ejecutaremos nuestro servidor de Socket IO. La aplicación que se ejecutará se conectará a redis en modo de suscriptor y publicará a todos los clientes conectados.
