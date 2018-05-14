@@ -54,7 +54,19 @@ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 -
 ```
 Se ejecuta:
 ```sh
-nodejs bridge_kafka_mosquitto.js
+##Para subir al Docker Hub la contenedora
+export DOCKER_ID_USER="username"
+docker login
+docker build -t kube.ms.bridge_kafka_mosquitto .
+docker tag kube.ms.bridge_kafka_mosquitto $DOCKER_ID_USER/bridge_kaf_mqtt
+docker push $DOCKER_ID_USER/bridge_kaf_mqtt
+##Para probar el contenedor antes de subirlo Kubernetes
+docker pull username/bridge_kaf_mqtt
+docker run morjuela/bridge_kaf_mqtt
+##Para deplegar el Kubernetes el Microservicio Bridge-Mosquitto-Kafka
+kubectl apply -f ms_bridge_km-svc.yml
+kubectl get service
+kubectl get deployments
 ```
 ### REDIS - KAFKA Consumer
 Vamos a ejecutar una aplicación que estará escuchando de kafka y almacenará el dato que llegue en un servidor de redis en nuestra instancia. Antes que nada, ubíquese sobre la carpeta de redis e instale el servidor
@@ -80,6 +92,7 @@ nodejs index.js
 * Johnny-Five (http://johnny-five.io/)
 * Mosquitto (http://mosquitto.org/)
 * Kafka (http://kafka.apache.org/)
+* no-kafka (https://www.npmjs.com/package/no-kafka#connection)
 * REDIS (https://redis.io/)
 * SocketIO (https://socket.io/)
 * Spark Streaming (http://spark.apache.org/docs/latest/streaming-programming-guide.html)
