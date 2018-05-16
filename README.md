@@ -14,12 +14,14 @@ Esta segunda entrega del proyecto de Arquitectura de Nueva Generación consiste 
 
 ## Configuración y Responsabilidades
 A continuación, se detalla la configuración de tópicos seleccionada, los responsables de su desarrollo y la correspondencia con el código fuente publicado:
-* TÓPICO - RESPONSABLE - DIRECTORIO
-* Temperatura - Juvenal - temperatura
-* Corriente - Carlos - Current
-* Luz - Martin - lumens
-* Voltaje - Cristian - Voltage
-* Ubicación - David - adjust_lighting
+
+| TOPICO | RESPONSABLE | DIRECTORIO |
+|-------------|-------------|-----------------|
+| Temperatura | Juvenal | Temperatura |
+| Corriente | Carlos | Current |
+| Luz | Martin | Lumens |
+| Voltaje | Cristian | Voltage |
+| Ubicacion | David | Adjust Lighting |
 
 ## Paso a paso Implementación
 Para poner en ejecución la aplicación junto con cada uno de los tópicos, se recomienda efectuar los siguientes pasos sobre una máquina virtual en EC2 de AWS:
