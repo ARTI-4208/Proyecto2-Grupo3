@@ -1,0 +1,12 @@
+{
+  "name": "mosquitto_to_broker",
+  "version": "1.0.0",
+  "description": "mosquitto mqtt broker to rabbit and kafka",
+  "author": "CesarF",
+  "dependencies": {
+    "mqtt": "^1.7.3",
+    "amqplib": "*",
+    "no-kafka": "*",
+    "redis": "*"
+  }
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="description" content="D3byEX 5.10" />
+    <meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>
+        function cargarGraficas() {
+            graficar("#tempavg", "avg");
+            graficar("#tempmax", "max");
+            graficar("#tempmin", "min");
+        }
+
+        function graficar(selector, tipo) {
+		//var url = "temperature_x_year_sample_data.json";
+            var url = "http://192.168.50.3:3000/temperature_x_year";
+            d3.json(url, function (error, data) {
+                var viewerTemp = data.map(function (d) {
+					console.log("valor temperatura: y tipo   " + tipo + " - " + (d[tipo]).toFixed(2));
+                    return (d[tipo]).toFixed(2);
+                });
+
+				console.log("viewerTemp: " + viewerTemp)
+                var maxTemp = d3.max(viewerTemp);
+				console.log("maxima temperatura: " + maxTemp)
+                var margin = {
+                    top: 10,
+                    right: 10,
+                    bottom: 100,
+                    left: 50
+                };
+
+                var graphWidth = 500,
+                    graphHeight = 300;
+
+                var totalWidth = graphWidth + margin.left + margin.right;
+                var totalHeight = graphHeight + margin.top + margin.bottom;
+
+                var axisPadding = 3;
+                var svg = d3.select(selector)
+                    .append('svg')
+                    .attr({
+                        width: totalWidth,
+                        height: totalHeight
+                    });
+
+                var mainGroup = svg
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',' +
+                        margin.top + ")");
+
+                var bands = d3.scale.ordinal()
+                    .domain(viewerTemp)
+                    .rangeBands([0, graphWidth], 0.05);
+
+                var yScale = d3.scale
+                    .linear()
+                    .domain([0, maxTemp])
+                    .range([0, graphHeight]);
+
+                function translator(d, i) {
+                    return "translate(" + bands.range()[i] + "," +
+                        (graphHeight - yScale(d)) + ")";
+                }
+
+                var barGroup = mainGroup.selectAll('g')
+                    .data(viewerTemp)
+                    .enter()
+                    .append('g')
+                    .attr('transform', translator);
+
+                barGroup.append('rect')
+                    .attr({
+                        fill: 'steelblue',
+                        width: bands.rangeBand(),
+                        height: function (d) {
+                            return yScale(d);
+                        }
+                    })
+                    .on('mouseover', function (d) {
+                        d3.select(this).attr('fill', 'orange');
+                    })
+                    .on('mouseout', function (d) {
+                        d3.select(this).attr('fill', 'steelblue');
+                    })                    
+
+                barGroup.append('text')
+                    .text(function (d) {
+                        return d;
+                    })
+                    .style('text-anchor', 'middle')
+                    .attr({
+                        dx: bands.rangeBand() / 2,
+                        dy: 20,
+                        //transform: 'rotate(90)',
+                        fill: 'white'
+                    });
+
+                var leftAxisGroup = svg.append('g');
+                leftAxisGroup.attr({
+                    transform: 'translate(' + (margin.left - axisPadding) + ',' +
+                        margin.top + ')'
+                });
+
+                var yAxisScale = d3.scale
+                    .linear()
+                    .domain([maxTemp, 0])
+                    .range([0, graphHeight]);
+
+                var leftAxis = d3.svg.axis()
+                    .orient('left')
+                    .scale(yAxisScale);
+
+                var leftAxisNodes = leftAxisGroup.call(leftAxis);
+                styleAxisNodes(leftAxisNodes);
+
+                var titles = data.map(function (d) {
+                    return d.year;
+                });
+                var bottomAxisScale = d3.scale.ordinal()
+                    .domain(titles)
+                    .rangeBands([axisPadding, graphWidth + axisPadding]);
+
+                var bottomAxis = d3.svg
+                    .axis()
+                    .scale(bottomAxisScale)
+                    .orient("bottom");
+
+                var bottomAxisX = margin.left - axisPadding;
+                var bottomAxisY = totalHeight - margin.bottom + axisPadding;
+
+                var bottomAxisGroup = svg.append("g")
+                    .attr({
+                        transform: 'translate(' + bottomAxisX + ',' + bottomAxisY + ')'
+                    });
+
+                var bottomAxisNodes = bottomAxisGroup.call(bottomAxis);
+                styleAxisNodes(bottomAxisNodes);
+
+                bottomAxisNodes.selectAll("text")
+                    .style('text-anchor', 'start')
+                    .attr({
+                        dx: 10,
+                        dy: -3,
+                        transform: 'rotate(90)'
+                    });
+
+                function styleAxisNodes(axisNodes) {
+                    axisNodes.selectAll('.domain')
+                        .attr({
+                            fill: 'none',
+                            'stroke-width': 1,
+                            stroke: 'black'
+                        });
+                    axisNodes.selectAll('.tick line')
+                        .attr({
+                            fill: 'none',
+                            'stroke-width': 1,
+                            stroke: 'black'
+                        });
+                }
+            });
+        }
+    </script>
+</head>
+
+<body onload="cargarGraficas()">
+    <div style="max-width:600px;margin:auto">
+        <div>
+            <div>
+                <h1>TERMPERATURA PROMEDIO X AÑO</h1>
+            </div>
+            <div id="tempavg"></div>
+        </div>
+        <div>
+            <div>
+                <h1>TERMPERATURA MÁXIMA X AÑO</h1>
+            </div>
+
+            <div id="tempmax"></div>
+        </div>
+        <div>
+            <div>
+                <h1>TERMPERATURA MÍNIMA X AÑO</h1>
+            </div>
+            <div id="tempmin"></div>
+        </div>
+    </div>
+</body>
+
+</html>

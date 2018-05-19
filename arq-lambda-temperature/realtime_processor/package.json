@@ -1,0 +1,17 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Consume dynamoDB using socketio client",
+  "main": "client.js",
+  "dependencies": {
+    "async": "^2.6.0",
+    "mongo-oplog": "^2.1.0",
+    "mongodb": "^3.0.5",
+    "no-kafka": "^3.2.9",
+    "reactive-mongo": "0.0.2",
+    "reactive-mongodb": "^0.1.4",
+    "rethinkdb": "^2.3.3",
+    "rxjs": "^5.5.8",
+    "socket.io-client": "^2.1.0"
+  }
+}
