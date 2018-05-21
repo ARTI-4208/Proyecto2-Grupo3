@@ -115,6 +115,8 @@ Ejecutaremos nuestro servidor de Socket IO. La aplicación que se ejecutará se 
 ```sh
 nodejs index.js
 ```
+### Video Demostracion
+[![Proyecto parte II](https://i.ytimg.com/vi/CrpytCgGPP8/2.jpg?time=1526740626044)](https://youtu.be/CrpytCgGPP8)
 
 ## Referencias
 * Arduino (https://www.arduino.cc/en/Main/Software)

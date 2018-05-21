@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  directoryc-microservicio:
+    build: ./microservice
+    ports:
+     - "3096:3096"
+    depends_on:
+     - directoryc-db
+    environment:
+     - DATABASE_HOST=directoryc-db
+  directoryc-db:
+    build: ./database

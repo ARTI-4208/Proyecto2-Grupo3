@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: msconsumerckr-svc
+  name: msconsumerckr-svc
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: msconsumerckr-svc
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: msconsumerckr-svc
+    spec:
+      containers:
+      - image: docker.io/morjuela/consumerc_kaf_rds
+        imagePullPolicy: IfNotPresent
+        name: msconsumerckr-svc
+        ports:
+        - containerPort: 9094
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: msconsumerckr-svc
+  name: msconsumerckr-svc
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 9094
+  selector:
+    run: msconsumerckr-svc
+  sessionAffinity: None
+  type: LoadBalancer

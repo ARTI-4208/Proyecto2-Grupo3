@@ -1,0 +1,11 @@
+{
+  "name": "Proyecto2_ArqNuevaGen_ConsumerKafka",
+  "version": "1.0.0",
+  "description": "Components to deploy real time example: bridge mosquitto-kafka, kafka consumer, GUI component",
+  "author": "MartinO",
+  "dependencies": {
+    "no-kafka": "*",
+    "redis":"*",
+    "express": "4.10.2"
+  }
+}
