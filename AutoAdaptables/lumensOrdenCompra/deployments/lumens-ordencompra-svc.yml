@@ -1,0 +1,51 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: lumens-ordencompra-svc
+  name: lumens-ordencompra-svc
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: lumens-ordencompra-svc
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: lumens-ordencompra-svc
+    spec:
+      containers:
+      - image: docker.io/juvenalelias/lumens-ordencompra
+        imagePullPolicy: IfNotPresent
+        name: lumens-ordencompra-svc
+        env:
+        - name: API_QUEUE
+          value: "172.24.101.93"
+        ports:
+        - containerPort: 3010
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: lumens-ordencompra-svc
+  name: lumens-ordencompra-svc
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3010
+  selector:
+    run: lumens-ordencompra-svc
+  sessionAffinity: None
+  type: LoadBalancer
